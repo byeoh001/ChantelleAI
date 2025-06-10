@@ -6,7 +6,6 @@
      <b>ChantelleAI</b> is designed to make resume creation effortless. With the help of AI, users can generate, update, and customize their resumes, ensuring they stand out to potential employers. The application is secure, user-friendly, and highly customizable.
   </div>
   <br />
-  <a href=""><strong>➥ Visit ChantelleAI App</strong></a>
 </div>
 
 ## <a name="features">✨ Features</a>
@@ -52,7 +51,7 @@ Make sure you have the following installed on your machine:
 ### Cloning the Repository
 
 ```bash
-git clone ""
+git clone "https://github.com/byeoh001/ChantelleAI.git"
 cd ChantelleAI
 ```
 
@@ -91,14 +90,4 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can contribute:
-
-- Fork the repository.
-- Create your feature branch (`git checkout -b feature/AmazingFeature`).
-- Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-- Push to the branch (`git push origin feature/AmazingFeature`).
-- Open a pull request.
 
