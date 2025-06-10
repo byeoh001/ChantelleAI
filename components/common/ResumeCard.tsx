@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Building2, Loader2, MoreVertical } from "lucide-react";
+import { Loader2, MoreVertical } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { deleteResume } from "@/lib/actions/resume.actions";
 import { useToast } from "../ui/use-toast";
@@ -50,19 +50,37 @@ const ResumeCard = ({
   const myResume = JSON.parse(resume);
   const [openAlert, setOpenAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [companyPhoto, setCompanyPhoto] = useState(myResume.companyLogo || null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const { toast } = useToast();
 
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      const imageUrl = URL.createObjectURL(file);
-      setCompanyPhoto(imageUrl);
-      // Optionally save to localStorage or your preferred storage
-      localStorage.setItem(`company-photo-${myResume.resumeId}`, imageUrl);
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("resumeId", myResume.resumeId); 
+
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.imageUrl) {
+      setUploadedImage(data.imageUrl);     
+      refreshResumes();                    
+    } else {
+      toast({
+        title: "Upload failed",
+        description: data.error || "Try again later.",
+        variant: "destructive",
+      });
     }
   };
+
+
 
   const onDelete = async () => {
     setIsLoading(true);
@@ -92,6 +110,25 @@ const ResumeCard = ({
 
   return (
     <div className="relative aspect-[1/1.2] flex flex-col hover:scale-105 transition-all">
+
+      <label className="absolute top-2 right-2 bg-white p-1 rounded-full shadow cursor-pointer z-10">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.207 3.94l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+        </svg>
+      </label>
+
       <Link
         href={"/my-resume/" + myResume.resumeId + "/view"}
         className="flex-grow"
@@ -103,37 +140,12 @@ const ResumeCard = ({
           }}
         >
 
-          <div className="absolute top-3 right-3 z-10">
-            <label 
-              htmlFor={`photo-${myResume.resumeId}`} 
-              className="cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              <div className="w-12 h-12 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                {companyPhoto ? (
-                  <img src={companyPhoto} alt="Company" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 hover:text-gray-600">
-                    <Building2 className="w-5 h-5" />
-                  </div>
-                )}
-              </div>
-            </label>
-            <input
-              id={`photo-${myResume.resumeId}`}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileSelect}
-              onClick={(e) => e.stopPropagation()}
+          <div className="h-full w-full overflow-hidden rounded-t-lg">
+            <img
+              src={uploadedImage || myResume.imageUrl || "/img/blank-cv.png"}
+              alt="Resume thumbnail"
+              className="h-full w-full object-cover"
             />
-          </div>
-
-          <div className="flex size-full items-center justify-center">
-            <img src="/img/blank-cv.png" width={80} height={80} />
           </div>
         </div>
       </Link>
@@ -151,6 +163,14 @@ const ResumeCard = ({
           <DropdownMenuContent>
             <DropdownMenuItem
               onClick={() =>
+                router.push("/my-resume/" + myResume.resumeId + "/view")
+              }
+            >
+              View
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() =>
                 router.push("/my-resume/" + myResume.resumeId + "/edit")
               }
             >
@@ -159,10 +179,10 @@ const ResumeCard = ({
 
             <DropdownMenuItem
               onClick={() =>
-                router.push("/my-resume/" + myResume.resumeId + "/view")
+                router.push("/my-resume/" + myResume.resumeId + "/optimize")
               }
             >
-              View
+              Optimize
             </DropdownMenuItem>
 
             <DropdownMenuItem onClick={() => setOpenAlert(true)}>

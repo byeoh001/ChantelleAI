@@ -1,3 +1,5 @@
+"use client";
+
 import { useFormContext } from "@/lib/context/FormProvider";
 import React from "react";
 import PersonalDetailsPreview from "./previews/PersonalDetailsPreview";

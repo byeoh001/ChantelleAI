@@ -267,3 +267,10 @@ export async function deleteResume(resumeId: string, path: string) {
     return { success: false, error: error.message };
   }
 }
+
+
+
+
+
+
+

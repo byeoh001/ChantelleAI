@@ -5,6 +5,15 @@ import React from "react";
 const ExperiencePreview = () => {
   const { formData } = useFormContext();
 
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      year: "2-digit",
+    });
+  };
+
+
   return (
     <div className="my-6">
       <h2
@@ -37,14 +46,10 @@ const ExperiencePreview = () => {
             {experience?.city}
             {experience?.city && experience?.state && ", "}
             {experience?.state}
-            <span>
-              {experience?.startDate}
-              {experience?.startDate &&
-                (experience?.endDate || experience?.endDate === "") &&
-                " to "}
-              {experience?.startDate && experience?.endDate == ""
-                ? "Present"
-                : experience.endDate}
+            <span className="text-xs text-gray-600">
+              {formatDate(experience?.startDate)}
+              {" – "}
+              {experience?.endDate === "" ? "Present" : formatDate(experience?.endDate)}
             </span>
           </h2>
           {experience?.workSummary && (

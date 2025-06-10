@@ -9,6 +9,8 @@ import ResumePreview from "@/components/layout/my-resume/ResumePreview";
 import { usePathname } from "next/navigation";
 import PageWrapper from "@/components/common/PageWrapper";
 import { DownloadIcon, Share2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 const FinalResumeView = ({
   params,
@@ -20,9 +22,8 @@ const FinalResumeView = ({
   const path = usePathname();
   const { formData } = useFormContext();
 
-  const [showOptimizer, setShowOptimizer] = useState(false); 
-  const [jobDescription, setJobDescription] = useState(""); 
-  const [minimumRequirements, setMinimumRequirements] = useState(""); 
+  const router = useRouter();
+  const resumeId = params.id;
 
   const handleDownload = () => {
     window.print();
@@ -67,10 +68,11 @@ const FinalResumeView = ({
 
               <Button
                 className="flex px-8 py-6 gap-2 rounded-full bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-700/30 text-white"
-                onClick={() => setShowOptimizer((prev) => !prev)}
+                onClick={() => router.push(`/my-resume/${resumeId}/optimize`)}
               >
                 ✨ Optimize Resume
               </Button>
+
 
               <Button
                 className="flex px-12 py-6 gap-2 rounded-full bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-700/30 text-white"
@@ -94,48 +96,6 @@ const FinalResumeView = ({
 
               
             </div>
-
-            {showOptimizer && (
-                <div className="mt-6 w-full max-w-4xl mx-auto bg-white border border-gray-300 rounded-xl p-6 shadow-sm flex flex-col gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      Job Description
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={jobDescription}
-                      onChange={(e) => setJobDescription(e.target.value)}
-                      placeholder="Paste the job description here..."
-                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      Job Requirements
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={minimumRequirements}
-                      onChange={(e) => setMinimumRequirements(e.target.value)}
-                      placeholder="Paste the requirements here..."
-                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button
-                      className="bg-primary-700 text-white px-6 py-2 rounded-md hover:bg-primary-800 transition"
-                      onClick={() => {
-                        console.log("Optimizing with:", jobDescription, minimumRequirements);
-                        // Add your AI logic here
-                      }}
-                    >
-                      Optimize Resume
-                    </Button>
-                  </div>
-                </div>
-              )}
 
           </div>
         </div>

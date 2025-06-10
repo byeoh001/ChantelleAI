@@ -5,6 +5,15 @@ import React from "react";
 const EducationalPreview = () => {
   const { formData } = useFormContext();
 
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      year: "2-digit",
+    });
+  };
+
+
   return (
     <div className="my-6">
       <h2
@@ -35,14 +44,10 @@ const EducationalPreview = () => {
             {education?.degree}
             {education?.degree && education?.major && " in "}
             {education?.major}
-            <span>
-              {education?.startDate}
-              {education?.startDate &&
-                (education?.endDate || education?.endDate === "") &&
-                " to "}
-              {education?.startDate && education?.endDate == ""
-                ? "Present"
-                : education.endDate}
+           <span className="text-xs text-gray-600">
+              {formatDate(education?.startDate)}
+              {" – "}
+              {education?.endDate === "" ? "Present" : formatDate(education?.endDate)}
             </span>
           </h2>
           {education?.description && (
