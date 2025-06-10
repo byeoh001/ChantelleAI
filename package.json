@@ -1,5 +1,5 @@
 {
-  "name": "PathOptimzer",
+  "name": "ChantelleAI",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,10 +25,12 @@
     "clsx": "^2.1.1",
     "draft-js": "^0.11.7",
     "lucide-react": "^0.408.0",
+    "mammoth": "^1.9.1",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
     "next": "14.2.10",
     "next-nprogress-bar": "^2.3.12",
+    "pdf-parse": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",

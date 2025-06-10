@@ -19,6 +19,8 @@ import {
   addSkillToResume,
   updateResume,
 } from "@/lib/actions/resume.actions";
+import mammoth from "mammoth";
+import pdfParse from "pdf-parse";
 
 const ResumeEditForm = ({
   params,
@@ -36,6 +38,7 @@ const ResumeEditForm = ({
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { formData } = useFormContext();
+
 
   return (
     <div className="flex flex-col gap-5">
@@ -146,6 +149,8 @@ const ResumeEditForm = ({
           </Button>
         </div>
       </div>
+
+
       {activeFormIndex == 1 ? (
         <PersonalDetailsForm params={params} />
       ) : activeFormIndex == 2 ? (
@@ -159,6 +164,7 @@ const ResumeEditForm = ({
       ) : activeFormIndex == 6 ? (
         redirect("/my-resume/" + params.id + "/view")
       ) : null}
+
     </div>
   );
 };

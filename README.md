@@ -15,13 +15,13 @@
     <img src="https://img.shields.io/badge/-Typescript-black?style=for-the-badge&logoColor=white&logo=typescript&color=387CC8" alt="typescript" />
   </div>
 
-  <h2 align="center">PathOptimzer</h2>
+  <h2 align="center">ChantelleAI</h2>
 
   <div align="center">
-     <b>PathOptimzer</b> is designed to make resume creation effortless. With the help of AI, users can generate, update, and customize their resumes, ensuring they stand out to potential employers. The application is secure, user-friendly, and highly customizable.
+     <b>ChantelleAI</b> is designed to make resume creation effortless. With the help of AI, users can generate, update, and customize their resumes, ensuring they stand out to potential employers. The application is secure, user-friendly, and highly customizable.
   </div>
   <br />
-  <a href="https://pathoptimzer.netlify.app/"><strong>➥ Visit PathOptimzer App</strong></a>
+  <a href=""><strong>➥ Visit ChantelleAI App</strong></a>
 </div>
 
 ## <a name="features">✨ Features</a>
@@ -67,8 +67,8 @@ Make sure you have the following installed on your machine:
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/prosenjit07/PathOptimzer.git
-cd PathOptimzer
+git clone ""
+cd ChantelleAI
 ```
 
 ### Installation
@@ -117,8 +117,3 @@ Contributions are welcome! Here's how you can contribute:
 - Push to the branch (`git push origin feature/AmazingFeature`).
 - Open a pull request.
 
-## 📬 Contact
-
-Wanna reach out to me? DM me at 👇
-
-Email:prosenjitbiswas983@gmail.com

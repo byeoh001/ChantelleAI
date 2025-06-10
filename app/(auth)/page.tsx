@@ -15,10 +15,10 @@ const page = () => {
       <section>
         <div className="py-8 px-6 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12 md:px-10">
           <h1 className="mt-4 lg:mt-8 mb-4 text-4xl font-extrabold tracking-tight leading-none text-black md:text-5xl lg:text-6xl">
-          Unlock Your Career Potential <span className="text-primary-700 max-sm:block">With AI</span>
+          Getting You Hired <span className="text-primary-700 max-sm:block">With ChantelleAI</span>
           </h1>
           <p className="mb-8 text-lg font-normal text-gray-700 lg:text-xl sm:px-16 xl:px-48">
-          Discover your dream job with PathOptimizer, customized resumes, and skill gap assessments to reach you toward your career goals.
+          Discover your dream job with ChantelleAI, customized resumes, and skill gap assessments to reach you toward your career goals.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
             <Link
@@ -45,50 +45,44 @@ const page = () => {
           How it Works?
         </h2>
         <h2 className="text-md text-gray-500">
-          Generate resume in just 3 steps
+          Create. Enhance. Share.
         </h2>
 
         <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 md:px-24">
-          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
-            <AtomIcon className="h-8 w-8" />
+          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl relative max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
+      
+            <div className="flex items-center gap-16">
+              <AtomIcon className="h-6 w-6" />
+              <h2 className="text-xl font-bold text-black">Create</h2>
+            </div>
 
-            <h2 className="mt-4 text-xl font-bold text-black">
-              Create Your Template
-            </h2>
-
-            <p className="mt-1 text-sm text-gray-600">
-              Start by selecting the color scheme for your resume template. Our
-              single, professionally designed template ensures a clean and
-              consistent look for all users.
+            <p className="mt-4 text-sm text-gray-600 text-center">
+              Create a resume from scratch.
             </p>
           </div>
 
-          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
-            <Edit className="h-8 w-8" />
+          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl relative max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
 
-            <h2 className="mt-4 text-xl font-bold text-black">
-              Update Your Information
-            </h2>
+            <div className="flex items-center gap-14">
+              <Edit className="h-8 w-8" />
+              <h2 className="text-xl font-bold text-black">Enhance</h2>
+            </div>
 
-            <p className="mt-1 text-sm text-gray-600">
-              Enter your personal details, work experience, education, and
-              skills into the provided form. Our AI assists you in filling out
-              each section accurately and effectively.
+            
+            <p className="mt-4 text-sm text-gray-600 text-center">
+              ChantelleAI rewrites your resume to fill gaps and refine key sections.
             </p>
           </div>
 
-          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
-            <Share2 className="h-8 w-8" />
+          <div className="cursor-pointer p-8 border border-gray-100 rounded-3xl bg-white shadow-xl relative max-md:shadow-md shadow-gray-600/10 hover:shadow-gray-600/15 transition-shadow duration-300">
 
-            <h2 className="mt-4 text-xl font-bold text-black">
-              Share Your Resume
-            </h2>
+            <div className="flex items-center gap-16">
+              <Share2 className="h-8 w-8" />
+              <h2 className="text-xl font-bold text-black">Share</h2>
+            </div>
 
-            <p className="mt-1 text-sm text-gray-600">
-              After completing your resume, save it securely and generate a
-              shareable link. Easily update your information anytime and share
-              the link with potential employers or download it in a preferred
-              format.
+            <p className="mt-4 text-sm text-gray-600 text-center">
+              Review the optimized resume and export it in your preferred format. 
             </p>
           </div>
         </div>
@@ -108,15 +102,15 @@ const page = () => {
       <footer className="backdrop-blur-md w-full">
         <div className="w-full mx-auto text-center max-w-screen-xl p-4 flex max-md:flex-col md:items-center md:justify-between">
           <span className="text-sm text-gray-500 sm:text-center">
-            © 2024{" "}
+            © 2025{" "}
             <span className="hover:text-primary-500 hover:cursor-pointer">
-              PathOptimzer™
+              ChantelleAI™
             </span>
             . All Rights Reserved.
           </span>
           <Link href="https://github.com/prosenjit07" className="me-4 md:me-6">
             <span className="hover:text-primary-500 mt-3 text-sm font-medium text-gray-500 sm:mt-0">
-              Made by Prosenjit Biswas
+              Made by SummerBuild
             </span>
           </Link>
         </div>

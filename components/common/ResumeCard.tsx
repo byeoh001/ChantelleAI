@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, MoreVertical } from "lucide-react";
+import { Building2, Loader2, MoreVertical } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { deleteResume } from "@/lib/actions/resume.actions";
 import { useToast } from "../ui/use-toast";
@@ -50,7 +50,19 @@ const ResumeCard = ({
   const myResume = JSON.parse(resume);
   const [openAlert, setOpenAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [companyPhoto, setCompanyPhoto] = useState(myResume.companyLogo || null);
   const { toast } = useToast();
+
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const imageUrl = URL.createObjectURL(file);
+      setCompanyPhoto(imageUrl);
+      // Optionally save to localStorage or your preferred storage
+      localStorage.setItem(`company-photo-${myResume.resumeId}`, imageUrl);
+    }
+  };
 
   const onDelete = async () => {
     setIsLoading(true);
@@ -90,6 +102,36 @@ const ResumeCard = ({
             borderColor: myResume?.themeColor,
           }}
         >
+
+          <div className="absolute top-3 right-3 z-10">
+            <label 
+              htmlFor={`photo-${myResume.resumeId}`} 
+              className="cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <div className="w-12 h-12 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                {companyPhoto ? (
+                  <img src={companyPhoto} alt="Company" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 hover:text-gray-600">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                )}
+              </div>
+            </label>
+            <input
+              id={`photo-${myResume.resumeId}`}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileSelect}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
           <div className="flex size-full items-center justify-center">
             <img src="/img/blank-cv.png" width={80} height={80} />
           </div>
