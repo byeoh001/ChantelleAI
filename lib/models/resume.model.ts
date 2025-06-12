@@ -15,6 +15,7 @@ const resumeSchema = new mongoose.Schema({
   summary: { type: String },
   experience: [{ type: mongoose.Schema.Types.ObjectId, ref: "Experience" }],
   education: [{ type: mongoose.Schema.Types.ObjectId, ref: "Education" }],
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
   skills: [{ type: mongoose.Schema.Types.ObjectId, ref: "Skill" }],
   themeColor: { type: String, default: themeColors[0] },
   imageUrl: { type: String, default: "" }

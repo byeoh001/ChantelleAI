@@ -7,7 +7,14 @@ import { generateSummary } from "@/lib/actions/gemini.actions";
 import { updateResume } from "@/lib/actions/resume.actions";
 import { useFormContext } from "@/lib/context/FormProvider";
 import { Brain, Loader2 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+
+type Suggestion = {
+  category: string;
+  suggestion: string;
+  section: string;
+};
+
 
 const SummaryForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
@@ -19,6 +26,20 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
     [] as any
   );
   const { toast } = useToast();
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [aiTips, setAiTips] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchSuggestions() {
+      const res = await fetch(`/api/optimize-resume?id=${params.id}`);
+      const data = await res.json();
+      setSuggestions(data.suggestions || []);
+    }
+
+    fetchSuggestions();
+  }, [params.id]);
+
+
 
   const handleSummaryChange = (e: any) => {
     const newSummary = e.target.value;
@@ -32,22 +53,61 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
     });
   };
 
-  const generateSummaryFromAI = async () => {
+ const generateSummaryFromAI = async () => {
     setIsAiLoading(true);
 
-    const result = await generateSummary(formData?.jobTitle);
+    const currentSummary = formData?.summary || "";
 
+    const relevantSuggestion = suggestions.find(
+      (sugg) =>
+        (sugg.category === "improvements" || sugg.category === "missing") &&
+        sugg.section === "Summary"
+    );
+
+    if (relevantSuggestion) {
+      try {
+        const res = await fetch("/api/incorporate-suggestion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            original: currentSummary,
+            suggestion: relevantSuggestion.suggestion,
+          }),
+        });
+
+        const data = await res.json();
+        const improved = data.improved;
+        const cleaned = improved.replace(/^"|"$/g, "");
+
+        setAiTips([cleaned]);
+      } catch (error) {
+        console.error("Chantelle suggestion failed:", error);
+        toast({
+          title: "AI Error",
+          description: "Could not generate improved summary.",
+          variant: "destructive",
+          className: "bg-white",
+        });
+      }
+
+      setIsAiLoading(false);
+      return;
+    }
+
+    // Fallback to Gemini AI
+    const result = await generateSummary(formData?.jobTitle);
     setAiGeneratedSummaryList(result);
 
     setIsAiLoading(false);
 
-    setTimeout(function () {
+    setTimeout(() => {
       listRef?.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
     }, 100);
   };
+
 
   const onSave = async (e: any) => {
     e.preventDefault();
@@ -88,7 +148,7 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
           Summary
         </h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Add summary about your job
+          Add summary about yourself
         </p>
 
         <form className="mt-5 space-y-2" onSubmit={onSave}>
@@ -136,6 +196,28 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
           </div>
         </form>
       </div>
+
+      {aiTips.length > 0 && (
+        <div className="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+          <h3 className="font-semibold text-yellow-800 mb-2 text-center">
+            💡 Chantelle's Suggests:
+          </h3>
+          <div className="space-y-3">
+            {aiTips.map((tip, i) => (
+              <div
+                key={i}
+                className="cursor-pointer p-3 rounded-md bg-white border hover:bg-yellow-100 transition"
+                onClick={() =>
+                  handleSummaryChange({ target: { name: "summary", value: tip } })
+                }
+              >
+                {tip}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
 
       {aiGeneratedSummaryList.length > 0 && (
         <div className="my-5" ref={listRef}>

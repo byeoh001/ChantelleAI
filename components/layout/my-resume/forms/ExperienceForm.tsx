@@ -8,7 +8,15 @@ import { generateExperienceDescription } from "@/lib/actions/gemini.actions";
 import { addExperienceToResume } from "@/lib/actions/resume.actions";
 import { useFormContext } from "@/lib/context/FormProvider";
 import { Brain, Loader2, Minus, Plus } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+
+
+type Suggestion = {
+  category: string;
+  suggestion: string;
+  section: string;
+};
+
 
 const ExperienceForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
@@ -37,6 +45,20 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
     experienceList.length - 1
   );
   const { toast } = useToast();
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [aiTips, setAiTips] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchSuggestions() {
+      const res = await fetch(`/api/optimize-resume?id=${params.id}`);
+      const data = await res.json();
+      setSuggestions(data.suggestions || []);
+    }
+
+    fetchSuggestions();
+  }, [params.id]);
+
+
 
   const handleChange = (index: number, event: any) => {
     const newEntries = experienceList.slice();
@@ -105,20 +127,57 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
         variant: "destructive",
         className: "bg-white border-2",
       });
-
       return;
     }
 
     setCurrentAiIndex(index);
-
     setIsAiLoading(true);
 
+    const currentSummary = formData?.experience[index]?.workSummary || "";
+
+   
+    const relevantSuggestion = suggestions.find(
+      (sugg) =>
+        (sugg.category === "improvements" || sugg.category === "missing") &&
+        sugg.section === "Experience"
+    );
+
+    if (relevantSuggestion) {
+      try {
+        const res = await fetch("/api/incorporate-suggestion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            original: currentSummary,
+            suggestion: relevantSuggestion.suggestion,
+          }),
+        });
+
+        const data = await res.json();
+        const improved = data.improved;
+        const cleaned = improved.replace(/^"|"$/g, "");
+
+        setAiTips([cleaned]);
+      } catch (err) {
+        console.error("AI integration failed", err);
+        toast({
+          title: "AI Error",
+          description: "Could not process suggestion.",
+          variant: "destructive",
+          className: "bg-white",
+        });
+      }
+
+      setIsAiLoading(false);
+      return; 
+    }
+
+    //Fallback: Use Gemini AI if no Chantelle suggestion
     const result = await generateExperienceDescription(
       `${formData?.experience[index]?.title} at ${formData?.experience[index]?.companyName}`
     );
 
     setAiGeneratedSummaryList(result);
-
     setIsAiLoading(false);
 
     setTimeout(function () {
@@ -128,6 +187,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
       });
     }, 100);
   };
+
 
   const onSave = async (e: any) => {
     e.preventDefault();
@@ -298,6 +358,35 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
           </Button>
         </div>
       </div>
+
+      {aiTips.length > 0 && (
+        <div className="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+          <h3 className="font-semibold text-yellow-800 mb-2 text-center">
+            💡 Chantelle's Suggests:
+          </h3>
+          <div className="space-y-3">
+            {aiTips.map((tip, i) => (
+              <div
+                key={i}
+                className="cursor-pointer p-3 rounded-md bg-white border hover:bg-yellow-100 transition"
+                onClick={() => {
+                  const newList = [...experienceList];
+                  newList[currentAiIndex].workSummary = tip;
+                  setExperienceList(newList);
+                  handleInputChange({
+                    target: {
+                      name: "experience",
+                      value: newList,
+                    },
+                  });
+                }}
+              >
+                {tip}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {aiGeneratedSummaryList.length > 0 && (
         <div className="my-5" ref={listRef}>

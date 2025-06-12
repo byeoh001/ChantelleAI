@@ -67,6 +67,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             </label>
             <Input
               name="firstName"
+              placeholder="John"
               defaultValue={formData?.firstName}
               required
               onChange={handleInputChange}
@@ -80,6 +81,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             <Input
               name="lastName"
               required
+              placeholder="Doe"
               onChange={handleInputChange}
               defaultValue={formData?.lastName}
               className="no-focus"
@@ -92,6 +94,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             <Input
               name="jobTitle"
               required
+              placeholder="Sales Manager"
               onChange={handleInputChange}
               defaultValue={formData?.jobTitle}
               className="no-focus"
@@ -104,6 +107,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             <Input
               name="address"
               required
+              placeholder="220 Pasir Ris Drive 50"
               defaultValue={formData?.address}
               onChange={handleInputChange}
               className="no-focus"
@@ -114,6 +118,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             <Input
               name="phone"
               required
+              placeholder="(+65) 12345678"
               defaultValue={formData?.phone}
               onChange={handleInputChange}
               className="no-focus"
@@ -124,6 +129,7 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
             <Input
               name="email"
               required
+              placeholder="johndoe@example.com"
               defaultValue={formData?.email}
               onChange={handleInputChange}
               className="no-focus"

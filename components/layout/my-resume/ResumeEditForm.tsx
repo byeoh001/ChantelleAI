@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -9,6 +9,7 @@ import PersonalDetailsForm from "./forms/PersonalDetailsForm";
 import SummaryForm from "./forms/SummaryForm";
 import ExperienceForm from "./forms/ExperienceForm";
 import EducationForm from "./forms/EducationForm";
+import ProjectForm from "./forms/ProjectsForm"
 import SkillsForm from "./forms/SkillsForm";
 import ThemeColor from "@/components/layout/ThemeColor";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,10 +18,17 @@ import {
   addEducationToResume,
   addExperienceToResume,
   addSkillToResume,
+  addProjectsToResume,
   updateResume,
 } from "@/lib/actions/resume.actions";
-import mammoth from "mammoth";
-import pdfParse from "pdf-parse";
+
+
+type Suggestion = {
+  category: string;
+  suggestion: string;
+  section: string;
+};
+
 
 const ResumeEditForm = ({
   params,
@@ -38,9 +46,24 @@ const ResumeEditForm = ({
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { formData } = useFormContext();
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  useEffect(() => {
+    async function fetchSuggestions() {
+      const res = await fetch(`/api/optimize-resume?id=${params.id}`);
+      const data = await res.json();
+      setSuggestions(data.suggestions || []);
+    }
+
+    fetchSuggestions();
+  }, [params.id]);
+
+
+
 
 
   return (
+    <div>
     <div className="flex flex-col gap-5">
       <div className="flex justify-between">
         <ThemeColor params={params} />
@@ -59,7 +82,7 @@ const ResumeEditForm = ({
             size="sm"
             disabled={isLoading}
             onClick={async () => {
-              if (activeFormIndex != 5) {
+              if (activeFormIndex != 6) {
                 setActiveFormIndex(activeFormIndex + 1);
               } else {
                 setIsLoading(true);
@@ -74,6 +97,7 @@ const ResumeEditForm = ({
                   summary: formData?.summary,
                   experience: formData?.experience,
                   education: formData?.education,
+                  project: formData?.projects,
                   skills: formData?.skills,
                 };
 
@@ -90,14 +114,19 @@ const ResumeEditForm = ({
                   },
                 });
 
+                const educationResult = await addEducationToResume(
+                  params.id,
+                  updates.education
+                );
+
                 const experienceResult = await addExperienceToResume(
                   params.id,
                   updates.experience
                 );
 
-                const educationResult = await addEducationToResume(
-                  params.id,
-                  updates.education
+                const projectsResult = await addProjectsToResume(
+                  params.id, 
+                  updates.project
                 );
 
                 const skillsResult = await addSkillToResume(
@@ -111,6 +140,7 @@ const ResumeEditForm = ({
                   updateResult.success &&
                   experienceResult.success &&
                   educationResult.success &&
+                  projectsResult.success &&
                   skillsResult.success
                 ) {
                   router.push("/my-resume/" + params.id + "/view");
@@ -121,6 +151,7 @@ const ResumeEditForm = ({
                       updateResult?.error ||
                       experienceResult?.error ||
                       educationResult?.error ||
+                      projectsResult?.error ||
                       skillsResult?.error,
                     variant: "destructive",
                     className: "bg-white",
@@ -129,7 +160,7 @@ const ResumeEditForm = ({
               }
             }}
           >
-            {activeFormIndex == 5 ? (
+            {activeFormIndex == 6 ? (
               <>
                 {isLoading ? (
                   <>
@@ -150,22 +181,46 @@ const ResumeEditForm = ({
         </div>
       </div>
 
-
       {activeFormIndex == 1 ? (
         <PersonalDetailsForm params={params} />
       ) : activeFormIndex == 2 ? (
         <SummaryForm params={params} />
       ) : activeFormIndex == 3 ? (
-        <ExperienceForm params={params} />
-      ) : activeFormIndex == 4 ? (
         <EducationForm params={params} />
+      ) : activeFormIndex == 4 ? (
+        <ExperienceForm params={params} />
       ) : activeFormIndex == 5 ? (
-        <SkillsForm params={params} />
+        <ProjectForm params={params} />
       ) : activeFormIndex == 6 ? (
+        <SkillsForm params={params} />
+      ) : activeFormIndex == 7 ? (
         redirect("/my-resume/" + params.id + "/view")
       ) : null}
 
     </div>
+
+    <div className="p-4 mt-4 rounded-lg bg-white shadow-md border">
+        <h3 className="text-base font-semibold text-gray-700 mb-2 border-b pb-1 text-center">
+          🧠 ChantelleAI's Analysis 🧠
+        </h3>
+
+        <div className="max-h-40 overflow-y-auto pr-2 min-h-[168px]">
+          {suggestions.length > 0 ? (
+            <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700 leading-relaxed">
+              {suggestions.map((sugg, index) => (
+                <li key={index}>
+                  <strong className="capitalize">{sugg.category}:</strong> {sugg.suggestion}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-400 italic text-center">No suggestions available.</p>
+          )}
+        </div>
+      </div>
+    </div>
+
+    
   );
 };
 

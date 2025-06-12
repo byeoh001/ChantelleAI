@@ -5,6 +5,7 @@ import Education from "../models/education.model";
 import Experience from "../models/experience.model";
 import Resume from "../models/resume.model";
 import Skill from "../models/skill.model";
+import Project from "../models/projects.model";
 import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
 
@@ -47,9 +48,14 @@ export async function fetchResume(resumeId: string) {
         model: Education,
       })
       .populate({
+        path: "projects",
+        model: Project,
+      })
+      .populate({
         path: "skills",
         model: Skill,
       });
+      
 
     return JSON.stringify(resume);
   } catch (error: any) {
@@ -252,6 +258,46 @@ export async function addSkillToResume(
     return { success: false, error: error?.message };
   }
 }
+
+
+export async function addProjectsToResume(
+  resumeId: string,
+  projectDataArray: any
+) {
+  try {
+    const resume = await Resume.findOne({ resumeId });
+
+    if (!resume) {
+      throw new Error("Resume not found");
+    }
+
+    const savedProjects = await Promise.all(
+      projectDataArray.map(async (projectData: any) => {
+        if (projectData._id) {
+          const existingProject = await Project.findById(projectData._id);
+          if (existingProject) {
+            return await Project.findByIdAndUpdate(projectData._id, projectData, {
+              new: true,
+            });
+          }
+        }
+        const newProject = new Project(projectData);
+        return await newProject.save();
+      })
+    );
+
+    const projectIds = savedProjects.map((project) => project._id);
+    resume.projects = projectIds;
+
+    const updatedResume = await resume.save();
+
+    return { success: true, data: JSON.stringify(updatedResume) };
+  } catch (error: any) {
+    console.error("Error adding or updating projects to resume: ", error);
+    return { success: false, error: error?.message };
+  }
+}
+
 
 export async function deleteResume(resumeId: string, path: string) {
   try {

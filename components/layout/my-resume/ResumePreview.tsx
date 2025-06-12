@@ -7,6 +7,7 @@ import SkillsPreview from "./previews/SkillsPreview";
 import SummaryPreview from "./previews/SummaryPreview";
 import ExperiencePreview from "./previews/ExperiencePreview";
 import EducationalPreview from "./previews/EducationalPreview";
+import ProjectsPreview from "./previews/ProjectsPreview";
 import { themeColors } from "@/lib/utils";
 
 const ResumePreview = () => {
@@ -30,8 +31,9 @@ const ResumePreview = () => {
       >
         <PersonalDetailsPreview />
         <SummaryPreview />
-        {formData?.experience?.length > 0 && <ExperiencePreview />}
         {formData?.education?.length > 0 && <EducationalPreview />}
+        {formData?.experience?.length > 0 && <ExperiencePreview />}
+        {formData?.projects?.length > 0 && <ProjectsPreview />}
         {formData?.skills?.length > 0 && <SkillsPreview />}
       </div>
     </div>
