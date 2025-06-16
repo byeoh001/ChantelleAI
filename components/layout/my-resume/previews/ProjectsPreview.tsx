@@ -70,9 +70,17 @@ const ProjectsPreview = () => {
           )}
 
 
-          {project.description && (
-            <p className="text-xs my-2 text-justify">{project.description}</p>
-          )}
+          <ul className="list-disc pl-5 text-xs my-2">
+            {(Array.isArray(project.description)
+              ? project.description
+              : project.description
+                  .split("•")
+                  .map((line: string) => line.trim())
+                  .filter((line: string) => line !== "")
+            ).map((line: string, i: number) => (
+              <li key={i}>{line.replace(/^•\s*/, "")}</li>
+            ))}
+          </ul>
         </div>
       ))}
     </div>

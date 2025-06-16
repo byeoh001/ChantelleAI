@@ -317,9 +317,20 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                   </div>
                   <RichTextEditor
                     defaultValue={item?.workSummary || ""}
-                    onRichTextEditorChange={(value: string) =>
-                      handleChange(index, value)
-                    }
+                    onRichTextEditorChange={(value: string) => {
+                      const updatedList = [...experienceList];
+                      updatedList[index].workSummary = value;
+
+                      setExperienceList(updatedList);
+                      handleInputChange({
+                        target: {
+                          name: "experience",
+                          value: updatedList,
+                        },
+                      });
+
+                      console.log("Editor update:", updatedList[index].workSummary);
+                    }}
                   />
                 </div>
               </div>
@@ -370,16 +381,22 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                 key={i}
                 className="cursor-pointer p-3 rounded-md bg-white border hover:bg-yellow-100 transition"
                 onClick={() => {
-                  const newList = [...experienceList];
-                  newList[currentAiIndex].workSummary = tip;
-                  setExperienceList(newList);
+                  const updatedList = [...experienceList];
+                  updatedList[currentAiIndex].workSummary = tip;
+
+                  setExperienceList(updatedList);
+
                   handleInputChange({
                     target: {
                       name: "experience",
-                      value: newList,
+                      value: [...updatedList], 
                     },
                   });
+
+                  //Log to confirm it's syncing
+                  console.log("Applied tip to formData:", updatedList);
                 }}
+
               >
                 {tip}
               </div>
@@ -394,11 +411,23 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
           {aiGeneratedSummaryList?.map((item: any, index: number) => (
             <div
               key={index}
-              onClick={() =>
-                handleChange(currentAiIndex, {
-                  target: { name: "workSummary", value: item?.description },
-                })
-              }
+              onClick={() => {
+                const updatedList = [...experienceList];
+                updatedList[currentAiIndex].workSummary = Array.isArray(item.description)
+                  ? item.description.join("\n")
+                  : item.description || "";
+
+                setExperienceList(updatedList);
+
+                handleInputChange({
+                  target: {
+                    name: "experience",
+                    value: updatedList,
+                  },
+                });
+
+              }}
+
               className={`p-5 shadow-lg my-4 rounded-lg border-t-2 ${
                 isAiLoading ? "cursor-not-allowed" : "cursor-pointer"
               }`}

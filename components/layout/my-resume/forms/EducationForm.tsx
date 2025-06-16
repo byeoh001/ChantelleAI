@@ -221,7 +221,14 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
 
     setIsLoading(true);
 
-    const result = await addEducationToResume(params.id, formData.education);
+    const educationToSubmit = (formData.education as any[]).map((entry) => ({
+      ...entry,
+      description: Array.isArray(entry.description)
+        ? entry.description.join('\n')
+        : entry.description,
+    }));
+
+    const result = await addEducationToResume(params.id, educationToSubmit);
 
     if (result.success) {
       toast({

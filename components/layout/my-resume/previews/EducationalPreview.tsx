@@ -51,8 +51,16 @@ const EducationalPreview = () => {
             </span>
           </h2>
           {education?.description && (
-            <p className="text-xs my-2 text-justify">{education?.description}</p>
+            <ul className="list-disc pl-5 text-xs my-2">
+              {(Array.isArray(education.description)
+                ? education.description
+                : education.description.split('\n')
+              ).map((line: string, i: number) => (
+                <li key={i}>{line.replace(/^•\s?/, '')}</li>
+              ))}
+            </ul>
           )}
+
         </div>
       ))}
     </div>

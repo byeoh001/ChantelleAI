@@ -6,6 +6,8 @@ import BulletGenerator from "@/components/common/BulletPointGenerator";
 export default function ResumeOptimizerClient({ resumeContent, resumeId, }: { resumeContent: string; resumeId: string }) {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasOptimized, setHasOptimized] = useState(false);
+
 
   const handleOptimize = async () => {
     setLoading(true);
@@ -26,6 +28,7 @@ export default function ResumeOptimizerClient({ resumeContent, resumeId, }: { re
     const data = await res.json();
     setSuggestions(data.suggestions || []);
     setLoading(false);
+    setHasOptimized(true);
   };
 
 
@@ -65,21 +68,32 @@ export default function ResumeOptimizerClient({ resumeContent, resumeId, }: { re
       </div>
 
       {/* Optimize Button */}
-      <div className="flex gap-2">
-        <button
-            onClick={handleOptimize}
-            className="w-1/2 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
-        >
-            {loading ? "Optimizing..." : "Optimize"}
-        </button>
-
-        <button
-            onClick={handleEdit}
-            className="w-1/2 bg-gray-100 text-gray-800 text-center py-2 rounded-lg hover:bg-gray-200 transition border"
+      <div className="flex gap-2 mt-2">
+        {hasOptimized ? (
+          <>
+            <button
+              onClick={handleOptimize}
+              className="w-1/2 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
             >
-            Edit
-        </button>
-    </div>
+              {loading ? "Optimizing..." : "Optimize Again"}
+            </button>
+
+            <button
+              onClick={handleEdit}
+              className="w-1/2 bg-gray-100 text-gray-800 text-center py-2 rounded-lg hover:bg-gray-200 transition border"
+            >
+              Back to Edit
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={handleOptimize}
+            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            {loading ? "Optimizing..." : "Optimize"}
+          </button>
+        )}
+      </div>
 
 
       <div className="p-4 mt-4 rounded-lg bg-white shadow-md border">

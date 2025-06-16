@@ -13,6 +13,8 @@ const ExperiencePreview = () => {
     });
   };
 
+  console.log("Preview FormData Experience:", formData?.experience);
+
 
   return (
     <div className="my-6">
@@ -53,12 +55,14 @@ const ExperiencePreview = () => {
             </span>
           </h2>
           {experience?.workSummary && (
-            <div
-              className="text-xs my-2 form-preview"
-              dangerouslySetInnerHTML={{
-                __html: experience?.workSummary,
-              }}
-            />
+            <ul className="list-disc pl-5 text-xs my-2">
+              {(Array.isArray(experience.workSummary)
+                ? experience.workSummary
+                : experience.workSummary.split("\n")
+              ).map((line: string, i: number) => (
+                <li key={i}>{line.replace(/^•\s?/, "")}</li>
+              ))}
+            </ul>
           )}
         </div>
       ))}

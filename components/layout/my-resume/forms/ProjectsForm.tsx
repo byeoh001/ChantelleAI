@@ -175,7 +175,14 @@ const generateProjectDescriptionFromAI = async (index: number) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = await addProjectsToResume(params.id, projectsList);
+    const cleanedProjects = projectsList.map((project: any) => ({
+      ...project,
+      description: Array.isArray(project.description)
+        ? project.description.join("\n") 
+        : project.description,
+    }));
+
+    const result = await addProjectsToResume(params.id, cleanedProjects);
 
     if (result.success) {
       toast({
@@ -352,10 +359,17 @@ const generateProjectDescriptionFromAI = async (index: number) => {
                 <div
                     key={index}
                     onClick={() =>
-                    handleChange(
-                        { target: { name: "description", value: item.description } },
+                      handleChange(
+                        {
+                          target: {
+                            name: "description",
+                            value: Array.isArray(item.description)
+                              ? item.description.join("\n")
+                              : item.description,
+                          },
+                        },
                         currentAiIndex
-                    )
+                      )
                     }
                     className="p-5 shadow-lg my-4 rounded-lg border-t-2 cursor-pointer"
                 >

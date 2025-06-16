@@ -42,9 +42,20 @@ const RichTextEditor = ({
       value={value}
       modules={modules}
       onChange={(e: any) => {
-        setValue(e);
-        onRichTextEditorChange({ target: { name: "workSummary", value: e } });
-      }}
+          setValue(e);
+
+          const plainText = e
+            .replace(/<li>/g, '• ')
+            .replace(/<\/li>/g, '\n')
+            .replace(/<br\s*\/?>/g, '\n')
+            .replace(/<\/p><p>/g, '\n')
+            .replace(/<[^>]+>/g, '')       // strip all remaining tags
+            .replace(/&nbsp;/g, ' ')       // decode non-breaking spaces
+            .replace(/•\s*/g, '\n• ')      // ensure each bullet is on new line
+            .trim();
+
+          onRichTextEditorChange(plainText);
+        }}
       className="mt-2"
       style={{ borderColor: "#E5E7EB" }}
     />
