@@ -7,7 +7,7 @@ const experienceSchema = new mongoose.Schema({
   state: { type: String },
   startDate: { type: String },
   endDate: { type: String },
-  workSummary: { type: String },
+  workSummary: [{ type: String }],
 });
 
 const Experience =

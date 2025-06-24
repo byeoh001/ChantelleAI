@@ -316,7 +316,11 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                     </Button>
                   </div>
                   <RichTextEditor
-                    defaultValue={item?.workSummary || ""}
+                    defaultValue={
+                      Array.isArray(item?.workSummary)
+                        ? item.workSummary.join("\n")
+                        : item?.workSummary || ""
+                    }
                     onRichTextEditorChange={(value: string) => {
                       const updatedList = [...experienceList];
                       updatedList[index].workSummary = value;

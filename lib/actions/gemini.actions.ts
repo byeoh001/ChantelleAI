@@ -85,6 +85,9 @@
           fixed = `[${fixed}]`;
         }
 
+        fixed = fixed.replace(/\\([$’])/g, '$1'); // unescape \$ -> $, \’ -> ’
+        fixed = fixed.replace(/[\u0000-\u001F]/g, ''); // remove control characters
+
         // Case: output is wrapped in a top-level object like { activity_levels: [...] }
         const parsed = JSON.parse(fixed);
 
@@ -143,6 +146,9 @@
       if (fixed.startsWith("{") && fixed.includes("},{") && !fixed.startsWith("[")) {
         fixed = `[${fixed}]`;
       }
+
+      fixed = fixed.replace(/\\([$’])/g, '$1'); // unescape \$ -> $, \’ -> ’
+      fixed = fixed.replace(/[\u0000-\u001F]/g, ''); // remove control characters
 
       const parsed = JSON.parse(fixed);
 
@@ -204,6 +210,9 @@
       if (fixed.startsWith("{") && fixed.includes("},{") && !fixed.startsWith("[")) {
         fixed = `[${fixed}]`;
       }
+
+      fixed = fixed.replace(/\\([$’])/g, '$1'); // unescape \$ -> $, \’ -> ’
+      fixed = fixed.replace(/[\u0000-\u001F]/g, ''); // remove control characters
 
       const parsed = JSON.parse(fixed);
 

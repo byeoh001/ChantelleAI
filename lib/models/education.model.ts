@@ -6,7 +6,7 @@ const educationSchema = new mongoose.Schema({
   major: { type: String },
   startDate: { type: String },
   endDate: { type: String },
-  description: { type: String },
+  description: [{ type: String }],
 });
 
 const Education =

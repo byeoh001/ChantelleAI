@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema(
     technologies: { type: String },
     startDate: { type: String },
     endDate: { type: String },   
-    description: { type: String },
+    description: [{ type: String }],
   },
   { timestamps: true }
 );

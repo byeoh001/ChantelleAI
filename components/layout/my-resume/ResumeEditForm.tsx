@@ -119,14 +119,28 @@ const ResumeEditForm = ({
                   updates.education
                 );
 
+                const experienceToSubmit = updates.experience.map((entry: { workSummary: string | string[] }) => ({
+                  ...entry,
+                  workSummary: typeof entry.workSummary === "string"
+                    ? entry.workSummary.split('\n').map(line => line.trim()).filter(Boolean)
+                    : entry.workSummary,
+                }));
+
                 const experienceResult = await addExperienceToResume(
                   params.id,
-                  updates.experience
+                  experienceToSubmit
                 );
+
+                const projectToSubmit = updates.project.map((entry: { description: string | string[] }) => ({
+                  ...entry,
+                  description: typeof entry.description === "string"
+                    ? entry.description.split('\n').map(line => line.trim()).filter(Boolean)
+                    : entry.description,
+                }));
 
                 const projectsResult = await addProjectsToResume(
                   params.id, 
-                  updates.project
+                  projectToSubmit
                 );
 
                 const skillsResult = await addSkillToResume(
